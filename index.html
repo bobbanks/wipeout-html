@@ -1,0 +1,164 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>WIPEOUT</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <script src="https://use.fontawesome.com/fc9c6291d0.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .btn-sq-large {
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute;
+        }
+
+        .operand-containers {
+            padding: 0;
+        }
+
+        .operand-containers .btn {
+            border-radius: 0;
+            font-size: 4em;
+            color: #000;
+        }
+
+        .stretchy-wrapper {
+            width: 100%;
+            padding-bottom: 100%;
+            position: relative;
+        }
+
+        .operator-containers {
+            padding: 0 5px 0 5px !important;
+        }
+
+        .operator-containers .btn {
+            color: #000;
+            font-size: 2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row" style="margin-top:15px;">
+            <div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-lg-2 col-lg-offset-5">
+                <div class="row">
+                    <div class="col-xs-6 operand-containers">
+                        <div class="stretchy-wrapper"><button type="button" id="operand-1" class="operand btn btn-info btn-sq-large pull-right"><span><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button></div>
+                    </div>
+                    <div class="col-xs-6 operand-containers">
+                        <div class="stretchy-wrapper"><button type="button" id="operand-2" class="operand btn btn-info btn-sq-large pull-left"><span><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6 operand-containers">
+                        <div class="stretchy-wrapper"><button type="button" id="operand-3" class="operand btn btn-info btn-sq-large pull-right"><span><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button></div>
+                    </div>
+                    <div class="col-xs-6 operand-containers">
+                        <div class="stretchy-wrapper"><button type="button" id="operand-4" class="operand btn btn-info btn-sq-large pull-left"><span><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="operator-row" style="margin-top:15px;">
+            <div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-lg-2 col-lg-offset-5">
+                <div class="row">
+                    <div class="col-xs-2 operator-containers"><button type="button" data-operator="+" class="operator btn btn-warning btn-block">+</buttton></div>
+                <div class="col-xs-2 operator-containers"><button type="button" data-operator="-" class="operator btn btn-warning btn-block">-</buttton></div>
+                <div class="col-xs-2 operator-containers"><button type="button" data-operator="*" class="operator btn btn-warning btn-block">&times;</buttton></div>
+                <div class="col-xs-2 operator-containers"><button type="button" data-operator="/" class="operator btn btn-warning btn-block">&divide;</buttton></div>
+                <div class="col-xs-2 operator-containers"><button type="button" data-operator="C" class="operator btn btn-danger btn-block">C</buttton></div>
+                <div class="col-xs-2 operator-containers"><button type="button" data-operator="=" class="operator btn btn-success btn-block">=</buttton></div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script>
+        var operands = [];
+        var readyToMakePick = false;
+        var expression = "";
+        $(function() {
+            $("#operator-row").hide();
+
+            for (var i = 0; i < 4; i++) {
+                setTimeout(makePick, i * 1000, i + 1);
+            }
+        });
+
+        $("button.operand").on('click', function() {
+            var operand = $(this).data('operand');
+            expression += operand;
+            $(this).attr("disabled","disabled");
+            $("#operator-row").show();
+            console.log(expression);
+        });
+
+        $("button.operator").on('click', function() {
+          var operator = $(this).data('operator');
+
+          if (operator == "C") {
+            reset();
+          } else if (operator == "=") {
+            var result = eval(expression);
+            alert("result = " + result);
+            reset();
+          } else {
+            expression += operator;
+            $("#operator-row").hide();
+            console.log(expression);
+          }
+        });
+
+        function reset() {
+          expression = "";
+          $("button.operand").removeAttr('disabled');
+        }
+
+        function makePick(i) {
+            var operand;
+
+            do {
+                operand = pickRandom();
+            }
+            while (operands.includes(operand))
+            operands.push(operand);
+
+            $("button#operand-" + i + " span").fadeOut(500, function() {
+                $(this).text(operand).fadeIn(1000);
+            });
+            $("button#operand-" + i).data("operand",operand);
+        }
+
+        function readyNextPick() {
+            console.log("ready!");
+            readyToMakePick = true;
+        }
+
+        function pickRandom() {
+            return Math.floor(Math.random() * 7) + 2;
+        }
+    </script>
+</body>
+
+</html>
