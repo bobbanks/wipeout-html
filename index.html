@@ -51,9 +51,20 @@
         .answer-row {
           margin-bottom: 15px;
         }
-        .answer-row div .btn {
+
+        .answer {
           width:100%;
+          color: #333;
+          border-color:#ccc;
         }
+        .answer.inactive {
+          visibility: hidden;
+        }
+        .answer:disabled {
+          color:#ccc;
+          border-color:#ccc;
+        }
+
     </style>
 </head>
 
@@ -84,39 +95,39 @@
             </div>
             <div class="col-sm-8 col-lg-10">
               <div class="row answer-row">
-                <div class="col-sm-2 col-sm-offset-1"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
+                <div class="col-sm-2 col-sm-offset-1"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
               </div>
               <div class="row answer-row">
-                <div class="col-sm-2 col-sm-offset-1"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
+                <div class="col-sm-2 col-sm-offset-1"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
               </div>
               <div class="row answer-row">
-                <div class="col-sm-2 col-sm-offset-1"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
+                <div class="col-sm-2 col-sm-offset-1"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
               </div>
               <div class="row answer-row">
-                <div class="col-sm-2 col-sm-offset-1"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
+                <div class="col-sm-2 col-sm-offset-1"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
               </div>
               <div class="row answer-row">
-                <div class="col-sm-2 col-sm-offset-1"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
-                <div class="col-sm-2"><button type="button" class="btn btn-default">?</button></div>
+                <div class="col-sm-2 col-sm-offset-1"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
+                <div class="col-sm-2"><button type="button" class="answer btn btn-default">&nbsp;</button></div>
               </div>
             </div>
         </div>
@@ -149,11 +160,20 @@
         var operands = [];
         var readyToMakePick = false;
         var expression = "";
+        var result;
+
         $(function() {
-            //$("#operator-row").hide();
+            $("#operator-row").hide();
+            $("button.answer").attr("disabled","disabled");
 
             for (var i = 0; i < 4; i++) {
                 setTimeout(makePick, i * 1000, i + 1);
+            }
+
+            for (var i = 0; i <= 24; i++) {
+              var $button = $($("button.answer")[i])
+              $button.text(i+1);
+              $button.data("answer",i+1);
             }
         });
 
@@ -171,9 +191,9 @@
           if (operator == "C") {
             reset();
           } else if (operator == "=") {
-            var result = eval(expression);
-            alert("result = " + result);
-            reset();
+            result = eval(expression);
+            $("button.operand").removeAttr('disabled');
+            $("button.answer").removeAttr('disabled');
           } else {
             expression += operator;
             $("#operator-row").hide();
@@ -181,8 +201,20 @@
           }
         });
 
+        $("button.answer").on('click',function() {
+          var answer = $(this).data("answer");
+          if (result == answer) {
+            $(this).addClass("inactive");
+          } else {
+            alert("please try again!");
+          }
+          $("button.answer").attr("disabled","disabled");
+          reset();
+        });
+
         function reset() {
           expression = "";
+          result = 0;
           $("button.operand").removeAttr('disabled');
         }
 
