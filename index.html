@@ -39,6 +39,16 @@
             position: relative;
         }
 
+        .operands.inactive {
+          display: none;
+          visibility: hidden;
+        }
+
+        .operators.inactive {
+          display: none;
+          visibility: hidden;
+        }
+
         .operator-containers {
             padding: 0 5px 0 5px !important;
         }
@@ -69,14 +79,28 @@
 </head>
 
 <body>
+  <div class="modal fade" id="incorrect-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Sorry!</h4>
+        </div>
+        <div class="modal-body">
+          Sorry, that's not correct.  Please try again!
+        </div>
+      </div>
+    </div>
+  </div>
     <div class="container-fluid" style="margin:20px">
         <div class="row">
             <div class="col-xs-12 text-center">
-                <h1>WIPEOUT</h1></div>
+                <h1>WIPEOUT</h1>
+            </div>
         </div>
         <div class="row" style="margin-top:15px;">
             <div class="col-sm-4 col-lg-2">
-                <div class="row">
+                <div class="row operands">
                     <div class="col-xs-6 operand-containers">
                         <div class="stretchy-wrapper"><button type="button" id="operand-1" class="operand btn btn-info btn-sq-large pull-right"><span><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button></div>
                     </div>
@@ -84,13 +108,23 @@
                         <div class="stretchy-wrapper"><button type="button" id="operand-2" class="operand btn btn-info btn-sq-large pull-left"><span><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button></div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row operands">
                     <div class="col-xs-6 operand-containers">
                         <div class="stretchy-wrapper"><button type="button" id="operand-3" class="operand btn btn-info btn-sq-large pull-right"><span><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button></div>
                     </div>
                     <div class="col-xs-6 operand-containers">
                         <div class="stretchy-wrapper"><button type="button" id="operand-4" class="operand btn btn-info btn-sq-large pull-left"><span><i class="fa fa-spinner fa-pulse fa-fw"></i></span></button></div>
                     </div>
+                </div>
+                <div class="row operators inactive" style="margin-top:15px;">
+                    <div class="col-xs-4 operator-containers"><button type="button" data-operator="+" class="operator btn btn-warning btn-block">+</buttton></div>
+                    <div class="col-xs-4 operator-containers"><button type="button" data-operator="*" class="operator btn btn-warning btn-block">&times;</buttton></div>
+                    <div class="col-xs-4 operator-containers"><button type="button" data-operator="C" class="operator btn btn-danger btn-block">C</buttton></div>
+                </div>
+                <div class="row operators inactive" style="margin-top:5px;">
+                  <div class="col-xs-4 operator-containers"><button type="button" data-operator="-" class="operator btn btn-warning btn-block">-</buttton></div>
+                  <div class="col-xs-4 operator-containers"><button type="button" data-operator="/" class="operator btn btn-warning btn-block">&divide;</buttton></div>
+                  <div class="col-xs-4 operator-containers"><button type="button" data-operator="=" class="operator btn btn-success btn-block">=</buttton></div>
                 </div>
             </div>
             <div class="col-sm-8 col-lg-10">
@@ -131,21 +165,6 @@
               </div>
             </div>
         </div>
-        <div class="row" id="operator-row">
-            <div class="col-sm-8 col-lg-4 col-lg-offset-4">
-                <div class="row" style="margin-top:15px;">
-                    <div class="col-xs-2 operator-containers"><button type="button" data-operator="+" class="operator btn btn-warning btn-block">+</buttton></div>
-                    <div class="col-xs-2 operator-containers"><button type="button" data-operator="*" class="operator btn btn-warning btn-block">&times;</buttton></div>
-                    <div class="col-xs-2 operator-containers"><button type="button" data-operator="C" class="operator btn btn-danger btn-block">C</buttton></div>
-                </div>
-                <div class="row" style="margin-top:5px;">
-                  <div class="col-xs-2 operator-containers"><button type="button" data-operator="-" class="operator btn btn-warning btn-block">-</buttton></div>
-                  <div class="col-xs-2 operator-containers"><button type="button" data-operator="/" class="operator btn btn-warning btn-block">&divide;</buttton></div>
-                  <div class="col-xs-2 operator-containers"><button type="button" data-operator="=" class="operator btn btn-success btn-block">=</buttton></div>
-                </div>
-            </div>
-          </div>
-        </div>
     </div>
 
 
@@ -167,7 +186,7 @@
             $("button.answer").attr("disabled","disabled");
 
             for (var i = 0; i < 4; i++) {
-                setTimeout(makePick, i * 1000, i + 1);
+                setTimeout(makePick, i * 500, i + 1);
             }
 
             for (var i = 0; i <= 24; i++) {
@@ -178,10 +197,20 @@
         });
 
         $("button.operand").on('click', function() {
-            var operand = $(this).data('operand');
-            expression += operand;
+            // disable this button so user cannot choose again in this try
             $(this).attr("disabled","disabled");
-            $("#operator-row").show();
+
+            // get the number from the button
+            var operand = $(this).data('operand');
+
+            // add number to end of the expression
+            expression += operand;
+
+            // hide operands and show operators
+            $(".operands").addClass("inactive");
+            $(".operators").removeClass("inactive");
+
+            // show the expression for debugging
             console.log(expression);
         });
 
@@ -189,16 +218,23 @@
           var operator = $(this).data('operator');
 
           if (operator == "C") {
+            $(".operands").removeClass("inactive");
+            $(".operators").addClass("inactive");
             reset();
           } else if (operator == "=") {
             result = eval(expression);
             $("button.operand").removeAttr('disabled');
             $("button.answer").removeAttr('disabled');
+            $(".operators").addClass("inactive");
           } else {
             expression += operator;
             $("#operator-row").hide();
+            $(".operands").removeClass("inactive");
+            $(".operators").addClass("inactive");
             console.log(expression);
           }
+
+
         });
 
         $("button.answer").on('click',function() {
@@ -206,9 +242,11 @@
           if (result == answer) {
             $(this).addClass("inactive");
           } else {
-            alert("please try again!");
+            $("#incorrect-modal").modal('show')
           }
           $("button.answer").attr("disabled","disabled");
+          $(".operands").removeClass("inactive");
+          $(".operators").addClass("inactive");
           reset();
         });
 
@@ -227,8 +265,8 @@
             while (operands.includes(operand))
             operands.push(operand);
 
-            $("button#operand-" + i + " span").fadeOut(500, function() {
-                $(this).text(operand).fadeIn(1000);
+            $("button#operand-" + i + " span").fadeOut(100, function() {
+                $(this).text(operand).fadeIn(100);
             });
             $("button#operand-" + i).data("operand",operand);
         }
